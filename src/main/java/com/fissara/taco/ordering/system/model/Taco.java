@@ -1,18 +1,18 @@
 package com.fissara.taco.ordering.system.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode
 @ToString
 @Entity
 @Table(name = "taco_tbl")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Taco extends AuditModel {
 
     @Id
@@ -20,13 +20,14 @@ public class Taco extends AuditModel {
     private Long id;
 
     @Column(name = "name")
+    @Length(min = 5, message = "*Taco name must have at least 5 characters")
     private String name;
 
     @ManyToOne
     @JoinColumn(name="order_id", nullable=false)
     private Order order;
 
-    @OneToMany(mappedBy = "taco", cascade = CascadeType.ALL)
-    private Set<Ingredient> ingredients;
+    @OneToMany(targetEntity = Taco.class, cascade = CascadeType.ALL)
+    private List<Ingredient> ingredients;
 
 }

@@ -1,18 +1,16 @@
 package com.fissara.taco.ordering.system.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Data
 @EqualsAndHashCode
 @ToString
 @Entity
 @Table(name = "ingredient_tbl")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Ingredient extends AuditModel {
 
     @Id
