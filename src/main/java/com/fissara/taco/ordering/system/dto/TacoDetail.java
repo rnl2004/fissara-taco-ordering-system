@@ -11,9 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Taco {
+public class TacoDetail {
 
     private Long id;
     private String name;
-    private List<Ingredient> ingredients;
+    private List<IngredientDetail> ingredients;
 }

@@ -9,7 +9,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Ingredient {
+public class IngredientDetail {
 
     private Long id;
     private String name;

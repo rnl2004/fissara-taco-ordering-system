@@ -36,30 +36,6 @@ public class OrderService {
     @Autowired
     private IngredientRepository ingredientRepository;
 
-    @Transactional(readOnly = true)
-    public CustomerOrderResponse findAlOrdersByCustomerId(Long customerId) throws OrderingException {
-        CustomerOrderResponse customerOrders = new CustomerOrderResponse();
-        try {
-            List<CustomerOrder> customerOrderList = new LinkedList<>();
-            Customer customer = customerRepository.getOne(customerId);
-            CustomerDetail customerDetail = new CustomerDetail();
-            customerDetail.setId(customer.getId());
-            customerDetail.setName(customer.getName());
-            customerDetail.setCreatedAt(customer.getCreatedAt());
-            customerOrders.setCustomerDetail(customerDetail);
-            for (Order o : orderRepository.findOrdersByCustomerId(customerId)) {
-                CustomerOrder customerOrder = new CustomerOrder();
-                customerOrder.setOrderId(o.getId());
-                customerOrder.setCreatedAt(o.getCreatedAt());
-                customerOrderList.add(customerOrder);
-            }
-            customerOrders.setCustomerOrders(customerOrderList);
-        } catch (Exception e) {
-            throw new OrderingException(e.getStackTrace().toString());
-        }
-        return customerOrders;
-    }
-
     @Transactional
     public OrderResponse processOrderRequest(OrderRequest orderRequest) throws OrderingException, TacoException, IngredientException {
         try {
@@ -100,5 +76,47 @@ public class OrderService {
             throw new OrderingException(e.getMessage());
         }
         return null;
+    }
+
+    @Transactional(readOnly = true)
+    public CustomerOrderResponse findAlOrdersByCustomerId(Long customerId) throws OrderingException {
+        CustomerOrderResponse customerOrders = new CustomerOrderResponse();
+        try {
+            List<CustomerOrder> customerOrderList = new LinkedList<>();
+            Customer customer = customerRepository.getOne(customerId);
+            CustomerDetail customerDetail = new CustomerDetail();
+            customerDetail.setId(customer.getId());
+            customerDetail.setName(customer.getName());
+            customerDetail.setCreatedAt(customer.getCreatedAt());
+            customerOrders.setCustomerDetail(customerDetail);
+            for (Order o : orderRepository.findOrdersByCustomerId(customerId)) {
+                CustomerOrder customerOrder = new CustomerOrder();
+                customerOrder.setOrderId(o.getId());
+                customerOrder.setCreatedAt(o.getCreatedAt());
+
+                List<TacoDetail> tacoDetails = new LinkedList<>();
+                for (Taco taco : tacoRepository.findTacosByOrderId(o.getId())) {
+                    TacoDetail tacoDetail = new TacoDetail();
+                    tacoDetail.setId(taco.getId());
+                    tacoDetail.setName(taco.getName());
+
+                    List<IngredientDetail> ingredientDetails = new LinkedList<>();
+                    for (Ingredient ingredient : ingredientRepository.findIngredientsByTacoId(tacoDetail.getId())) {
+                        IngredientDetail ingredientDetail = new IngredientDetail();
+                        ingredientDetail.setId(ingredient.getId());
+                        ingredientDetail.setName(ingredient.getName());
+                        ingredientDetails.add(ingredientDetail);
+                    }
+                    tacoDetail.setIngredients(ingredientDetails);
+                    tacoDetails.add(tacoDetail);
+                }
+                customerOrder.setTacos(tacoDetails);
+                customerOrderList.add(customerOrder);
+            }
+            customerOrders.setCustomerOrders(customerOrderList);
+        } catch (Exception e) {
+            throw new OrderingException(e.getStackTrace().toString());
+        }
+        return customerOrders;
     }
 }

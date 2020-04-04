@@ -16,5 +16,5 @@ public class CustomerOrder {
 
     private Long orderId;
     private Date createdAt;
-    private List<Taco> tacos;
+    private List<TacoDetail> tacos;
 }
