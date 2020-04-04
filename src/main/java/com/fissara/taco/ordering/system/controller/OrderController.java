@@ -1,12 +1,16 @@
 package com.fissara.taco.ordering.system.controller;
 
+import com.fissara.taco.ordering.system.commons.exception.IngredientException;
+import com.fissara.taco.ordering.system.commons.exception.OrderingException;
+import com.fissara.taco.ordering.system.commons.exception.TacoException;
+import com.fissara.taco.ordering.system.dto.CustomerOrderResponse;
 import com.fissara.taco.ordering.system.dto.OrderRequest;
-import com.fissara.taco.ordering.system.model.Ingredient;
+import com.fissara.taco.ordering.system.dto.OrderResponse;
 import com.fissara.taco.ordering.system.model.Order;
 import com.fissara.taco.ordering.system.model.Taco;
-import com.fissara.taco.ordering.system.service.IngredientService;
 import com.fissara.taco.ordering.system.service.OrderService;
 import com.fissara.taco.ordering.system.service.TacoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,32 +26,25 @@ public class OrderController {
     @Autowired
     private TacoService tacoService;
 
-    @Autowired
-    private IngredientService ingredientService;
-
+    /**
+     *  This will take place the order process
+     * @param orderRequest composed of customer who ordered and order details as request body
+     * @return
+     * @throws OrderingException
+     */
     @PostMapping("/placeOrder")
-    public Order placeOrder(@RequestBody OrderRequest orderRequest) {
-        Order order = new Order();
-        order.setCustomer(orderRequest.getOrder().getCustomer());
-        Order createOrder = orderService.save(order);
-        if (createOrder != null) {
-            for (Taco taco : orderRequest.getOrder().getTacos()) {
-                taco.setOrder(createOrder);
-                //taco.setName(taco.getName());
-                Taco createTaco = tacoService.save(taco);
-                if (createTaco != null) {
-                    for (Ingredient ingredient: taco.getIngredients()) {
-                        ingredient.setTaco(createTaco);
-                        ingredientService.save(ingredient);
-                    }
-                }
-            }
-        }
-        return orderService.findById(order.getId());
+    public OrderResponse placeOrder(@RequestBody OrderRequest orderRequest) throws OrderingException, IngredientException, TacoException {
+        return orderService.processOrderRequest(orderRequest);
     }
 
-    @GetMapping("/getAllOrders")
-    public List<Order> getAllOrders() {
-        return orderService.findAll();
+    /**
+     * Get all customer orders
+     * @param id customer id as required parameter
+     * @return
+     * @throws OrderingException
+     */
+    @GetMapping("/findAlOrdersByCustomer")
+    public CustomerOrderResponse findAlOrdersByCustomer(@RequestParam(value = "id") Long id) throws OrderingException {
+        return orderService.findAlOrdersByCustomerId(id);
     }
 }

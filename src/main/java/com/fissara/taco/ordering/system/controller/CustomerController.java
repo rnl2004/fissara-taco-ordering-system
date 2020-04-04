@@ -18,7 +18,6 @@ public class CustomerController {
     @PostMapping("/create")
     public Customer create(@RequestBody CustomerRequest customerRequest) {
         Customer customer = new Customer();
-        customer.setId(customerRequest.getId());
         customer.setName(customerRequest.getName());
         return customerService.save(customer);
     }

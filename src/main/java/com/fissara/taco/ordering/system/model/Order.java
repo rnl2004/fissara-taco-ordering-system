@@ -1,27 +1,25 @@
 package com.fissara.taco.ordering.system.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @ToString
 @Entity
 @Table(name = "order_tbl")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Order extends AuditModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="customer_id", nullable=false)
     private Customer customer;
 
-    @OneToMany(targetEntity = Order.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Order.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Taco> tacos;
 }

@@ -6,14 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class OrderResponse {
+public class CustomerDetail {
 
-    private Long orderId;
-    private Date createAt;
-    private String message;
+    private Long id;
+    private String name;
+    private Date createdAt;
 }

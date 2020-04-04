@@ -1,16 +1,16 @@
 package com.fissara.taco.ordering.system.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Data
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @ToString
 @Entity
 @Table(name = "ingredient_tbl")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Ingredient extends AuditModel {
 
     @Id
@@ -20,7 +20,7 @@ public class Ingredient extends AuditModel {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="taco_id", nullable=false)
     private Taco taco;
 

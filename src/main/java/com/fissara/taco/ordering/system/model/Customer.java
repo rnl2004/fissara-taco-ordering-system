@@ -6,11 +6,11 @@ import lombok.*;
 import javax.persistence.*;
 
 @Data
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @ToString
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @Entity
 @Table(name = "customer_tbl")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Customer extends AuditModel {
 
     @Id

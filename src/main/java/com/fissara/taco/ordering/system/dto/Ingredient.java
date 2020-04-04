@@ -5,15 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class OrderResponse {
+public class Ingredient {
 
-    private Long orderId;
-    private Date createAt;
-    private String message;
+    private Long id;
+    private String name;
 }
