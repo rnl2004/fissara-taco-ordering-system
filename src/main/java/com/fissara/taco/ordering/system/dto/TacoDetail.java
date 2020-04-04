@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -15,5 +16,6 @@ public class TacoDetail {
 
     private Long id;
     private String name;
+    private Date createdAt;
     private List<IngredientDetail> ingredients;
 }

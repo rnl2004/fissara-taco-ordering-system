@@ -14,6 +14,8 @@ import com.fissara.taco.ordering.system.repository.CustomerRepository;
 import com.fissara.taco.ordering.system.repository.IngredientRepository;
 import com.fissara.taco.ordering.system.repository.OrderRepository;
 import com.fissara.taco.ordering.system.repository.TacoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ import java.util.List;
 
 @Service
 public class OrderService {
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -38,7 +41,9 @@ public class OrderService {
 
     @Transactional
     public OrderResponse processOrderRequest(OrderRequest orderRequest) throws OrderingException, TacoException, IngredientException {
+        logger.info("Start transactional order process. This will rollback once got an error...");
         try {
+            logger.info("Validating taco name...");
             for (Taco taco : orderRequest.getOrder().getTacos()) {
                 if (taco.getName().length() < 5) {
                     throw new TacoException("Error: " + ErrorMessage.INVALID_TACO_NAME_ERROR);
@@ -48,6 +53,7 @@ public class OrderService {
             order.setCustomer(orderRequest.getOrder().getCustomer());
             Order createdOrder = orderRepository.save(order);
             if (createdOrder != null) {
+                logger.info("Validating taco ingredients record size...");
                 for (Taco taco : orderRequest.getOrder().getTacos()) {
                     if (taco.getIngredients().size() < 1) {
                         throw new IngredientException("Error: " + ErrorMessage.INGREDIENT_IS_REQUIRED_ERROR);
@@ -65,6 +71,7 @@ public class OrderService {
                         }
                     }
                 }
+                logger.info(ConfirmMessage.TRANSACTION_COMPLETED);
                 return new OrderResponse(createdOrder.getId(),
                         createdOrder.getCreatedAt(), ConfirmMessage.TRANSACTION_COMPLETED);
             }
@@ -78,10 +85,18 @@ public class OrderService {
         return null;
     }
 
+    /**
+     * Find all orders for a certain customer
+     * @param customerId a key or id used to search in the database
+     * @return
+     * @throws OrderingException
+     */
     @Transactional(readOnly = true)
-    public CustomerOrderResponse findAlOrdersByCustomerId(Long customerId) throws OrderingException {
+    public CustomerOrderResponse findAllOrdersByCustomerId(Long customerId) throws OrderingException {
+        logger.info("Start transactional getting order process. This will rollback once got an error...");
         CustomerOrderResponse customerOrders = new CustomerOrderResponse();
         try {
+            logger.info("Construct customer orders...");
             List<CustomerOrder> customerOrderList = new LinkedList<>();
             Customer customer = customerRepository.getOne(customerId);
             CustomerDetail customerDetail = new CustomerDetail();
@@ -94,17 +109,21 @@ public class OrderService {
                 customerOrder.setOrderId(o.getId());
                 customerOrder.setCreatedAt(o.getCreatedAt());
 
+                logger.info("Construct taco details...");
                 List<TacoDetail> tacoDetails = new LinkedList<>();
                 for (Taco taco : tacoRepository.findTacosByOrderId(o.getId())) {
                     TacoDetail tacoDetail = new TacoDetail();
                     tacoDetail.setId(taco.getId());
                     tacoDetail.setName(taco.getName());
+                    tacoDetail.setCreatedAt(taco.getCreatedAt());
 
+                    logger.info("Construct taco ingredients detail...");
                     List<IngredientDetail> ingredientDetails = new LinkedList<>();
                     for (Ingredient ingredient : ingredientRepository.findIngredientsByTacoId(tacoDetail.getId())) {
                         IngredientDetail ingredientDetail = new IngredientDetail();
                         ingredientDetail.setId(ingredient.getId());
                         ingredientDetail.setName(ingredient.getName());
+                        ingredientDetail.setCreatedAt(ingredient.getCreatedAt());
                         ingredientDetails.add(ingredientDetail);
                     }
                     tacoDetail.setIngredients(ingredientDetails);
@@ -113,10 +132,13 @@ public class OrderService {
                 customerOrder.setTacos(tacoDetails);
                 customerOrderList.add(customerOrder);
             }
+
+            logger.info("Final constructing of customer order details...");
             customerOrders.setCustomerOrders(customerOrderList);
         } catch (Exception e) {
             throw new OrderingException(e.getStackTrace().toString());
         }
+        logger.info(ConfirmMessage.TRANSACTION_COMPLETED);
         return customerOrders;
     }
 }
