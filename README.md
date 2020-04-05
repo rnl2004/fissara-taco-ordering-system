@@ -37,9 +37,9 @@ NOTE: Since only one profile exist you can ommit the flag "--spring.profiles.act
 ## Test the Rest API
 Assuming Postman has been install or any REST API testing tool which you preferred.
 ```
-NOTE: At first load of spring boot application there were migration scription auto populate the data in database.
+NOTE: At first load of spring boot application the migration script executed to auto populate the data in database.
 
-To verify if the data persisted or inserted successfully. Please invoked this API below:
+To verify if the data persisted or inserted successfully. Please invoke the API below.
 
 Rest API 1: 
 Name: /api/order/findAllOrdersByCustomer
@@ -197,7 +197,7 @@ Expect output:
     "name": "Rico Nodalo Lugod"
 }
 
-NOTE: For this challenge i only put one element only just name :)
+NOTE: For this challenge i only put one element for simplicity just name :)
 
 
 Thanks...!!! :)

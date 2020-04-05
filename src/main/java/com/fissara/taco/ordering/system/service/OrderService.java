@@ -1,5 +1,6 @@
 package com.fissara.taco.ordering.system.service;
 
+import com.fissara.taco.ordering.system.commons.exception.CustomerException;
 import com.fissara.taco.ordering.system.commons.exception.IngredientException;
 import com.fissara.taco.ordering.system.commons.exception.OrderingException;
 import com.fissara.taco.ordering.system.commons.exception.TacoException;
@@ -40,9 +41,14 @@ public class OrderService {
     private IngredientRepository ingredientRepository;
 
     @Transactional
-    public OrderResponse processOrderRequest(OrderRequest orderRequest) throws OrderingException, TacoException, IngredientException {
+    public OrderResponse processOrderRequest(OrderRequest orderRequest) throws OrderingException, TacoException, IngredientException, CustomerException {
         logger.info("Start transactional order process. This will rollback once got an error...");
         try {
+            logger.info("Validating customer...");
+            if (orderRequest.getOrder().getCustomer() == null
+                    || orderRequest.getOrder().getCustomer().getId() == null) {
+                throw new CustomerException("Error: " + ErrorMessage.NOT_FOUND_CUSTOMER_ERROR);
+            }
             logger.info("Validating taco name...");
             for (Taco taco : orderRequest.getOrder().getTacos()) {
                 if (taco.getName().length() < 5) {
@@ -75,6 +81,8 @@ public class OrderService {
                 return new OrderResponse(createdOrder.getId(),
                         createdOrder.getCreatedAt(), ConfirmMessage.TRANSACTION_COMPLETED);
             }
+        } catch (CustomerException ce) {
+            throw new CustomerException(ce.getMessage());
         } catch (TacoException te) {
             throw new TacoException(te.getMessage());
         } catch (IngredientException ie) {
@@ -136,7 +144,7 @@ public class OrderService {
             logger.info("Final constructing of customer order details...");
             customerOrders.setCustomerOrders(customerOrderList);
         } catch (Exception e) {
-            throw new OrderingException(e.getStackTrace().toString());
+            throw new OrderingException(e.getMessage());
         }
         logger.info(ConfirmMessage.TRANSACTION_COMPLETED);
         return customerOrders;

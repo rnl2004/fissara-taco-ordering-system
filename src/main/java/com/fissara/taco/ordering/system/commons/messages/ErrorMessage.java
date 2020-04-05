@@ -3,6 +3,7 @@ package com.fissara.taco.ordering.system.commons.messages;
 public class ErrorMessage {
 
     public static final String INVALID_CUSTOMER_ERROR = "Customer is required";
+    public static final String NOT_FOUND_CUSTOMER_ERROR = "Customer not found";
     public static final String INVALID_TRANSACTION_ERROR = "Invalid transaction";
     public static final String INGREDIENT_IS_REQUIRED_ERROR = "Ingredient(s) is required at least one";
     public static final String TACO_IS_REQUIRED_ERROR = "Taco is required at least one";

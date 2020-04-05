@@ -1,5 +1,6 @@
 package com.fissara.taco.ordering.system.controller;
 
+import com.fissara.taco.ordering.system.commons.exception.CustomerException;
 import com.fissara.taco.ordering.system.commons.exception.IngredientException;
 import com.fissara.taco.ordering.system.commons.exception.OrderingException;
 import com.fissara.taco.ordering.system.commons.exception.TacoException;
@@ -7,7 +8,6 @@ import com.fissara.taco.ordering.system.dto.CustomerOrderResponse;
 import com.fissara.taco.ordering.system.dto.OrderRequest;
 import com.fissara.taco.ordering.system.dto.OrderResponse;
 import com.fissara.taco.ordering.system.service.OrderService;
-import com.fissara.taco.ordering.system.service.TacoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +27,8 @@ public class OrderController {
      */
     @PostMapping(value = "/placeOrder",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public OrderResponse placeOrder(@RequestBody OrderRequest orderRequest) throws OrderingException, IngredientException, TacoException {
+    public OrderResponse placeOrder(@RequestBody OrderRequest orderRequest) throws OrderingException,
+            IngredientException, TacoException, CustomerException {
         return orderService.processOrderRequest(orderRequest);
     }
 
@@ -38,7 +39,7 @@ public class OrderController {
      * @throws OrderingException
      */
     @GetMapping(value = "/findAllOrdersByCustomer", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CustomerOrderResponse findAllOrdersByCustomer(@RequestParam(value = "id") Long id) throws OrderingException {
+    public CustomerOrderResponse findAllOrdersByCustomer(@RequestParam(value = "id") Long id) throws OrderingException, CustomerException {
         return orderService.findAllOrdersByCustomerId(id);
     }
 }
