@@ -1,9 +1,11 @@
 package com.fissara.taco.ordering.system.model;
 
+import com.fissara.taco.ordering.system.commons.exception.TacoException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.persistence.*;
 import java.util.List;

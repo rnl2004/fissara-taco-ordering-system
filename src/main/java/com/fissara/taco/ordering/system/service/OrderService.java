@@ -5,7 +5,7 @@ import com.fissara.taco.ordering.system.commons.exception.IngredientException;
 import com.fissara.taco.ordering.system.commons.exception.OrderingException;
 import com.fissara.taco.ordering.system.commons.exception.TacoException;
 import com.fissara.taco.ordering.system.commons.messages.ConfirmMessage;
-import com.fissara.taco.ordering.system.commons.messages.ErrorMessage;
+import com.fissara.taco.ordering.system.commons.utils.Validate;
 import com.fissara.taco.ordering.system.dto.*;
 import com.fissara.taco.ordering.system.model.Customer;
 import com.fissara.taco.ordering.system.model.Ingredient;
@@ -44,26 +44,21 @@ public class OrderService {
     public OrderResponse processOrderRequest(OrderRequest orderRequest) throws OrderingException, TacoException, IngredientException, CustomerException {
         logger.info("Start transactional order process. This will rollback once got an error...");
         try {
+            Validate validate = new Validate();
             logger.info("Validating customer...");
-            if (orderRequest.getOrder().getCustomer() == null
-                    || orderRequest.getOrder().getCustomer().getId() == null) {
-                throw new CustomerException("Error: " + ErrorMessage.NOT_FOUND_CUSTOMER_ERROR);
-            }
-            logger.info("Validating taco name...");
-            for (Taco taco : orderRequest.getOrder().getTacos()) {
-                if (taco.getName().length() < 5) {
-                    throw new TacoException("Error: " + ErrorMessage.INVALID_TACO_NAME_ERROR);
-                }
-            }
+            validate.validateCustomer(orderRequest.getOrder().getCustomer());
+
+            logger.info("Validating taco...");
+            validate.validateTaco(orderRequest.getOrder().getTacos());
+
             Order order = new Order();
             order.setCustomer(orderRequest.getOrder().getCustomer());
             Order createdOrder = orderRepository.save(order);
             if (createdOrder != null) {
-                logger.info("Validating taco ingredients record size...");
                 for (Taco taco : orderRequest.getOrder().getTacos()) {
-                    if (taco.getIngredients().size() < 1) {
-                        throw new IngredientException("Error: " + ErrorMessage.INGREDIENT_IS_REQUIRED_ERROR);
-                    }
+                    logger.info("Validating taco ingredients...");
+                    validate.validateIngredient(taco.getIngredients());
+
                     Taco newTaco = new Taco();
                     newTaco.setName(taco.getName());
                     newTaco.setOrder(createdOrder);
@@ -149,4 +144,5 @@ public class OrderService {
         logger.info(ConfirmMessage.TRANSACTION_COMPLETED);
         return customerOrders;
     }
+
 }
