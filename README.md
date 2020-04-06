@@ -162,7 +162,7 @@ Expected output:
     "timestamp": "2020-04-04T14:22:22.368+0000",
     "status": 500,
     "error": "Internal Server Error",
-    "message": "Error: Taco name is required at least 5 characters",
+    "message": "Taco name is required at least 5 characters",
     "path": "/api/order/placeOrder"
 }
  
@@ -173,7 +173,7 @@ Expected output:
     "timestamp": "2020-04-04T14:25:22.342+0000",
     "status": 500,
     "error": "Internal Server Error",
-    "message": "Error: Ingredient(s) is required at least one",
+    "message": "Ingredient(s) is required at least one",
     "path": "/api/order/placeOrder"
 }
 
