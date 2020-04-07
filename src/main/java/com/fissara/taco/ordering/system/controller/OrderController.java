@@ -1,9 +1,9 @@
 package com.fissara.taco.ordering.system.controller;
 
-import com.fissara.taco.ordering.system.commons.exception.CustomerException;
-import com.fissara.taco.ordering.system.commons.exception.IngredientException;
-import com.fissara.taco.ordering.system.commons.exception.OrderingException;
-import com.fissara.taco.ordering.system.commons.exception.TacoException;
+import com.fissara.taco.ordering.system.commons.exceptions.CustomerException;
+import com.fissara.taco.ordering.system.commons.exceptions.IngredientException;
+import com.fissara.taco.ordering.system.commons.exceptions.OrderingException;
+import com.fissara.taco.ordering.system.commons.exceptions.TacoException;
 import com.fissara.taco.ordering.system.dto.CustomerOrderResponse;
 import com.fissara.taco.ordering.system.dto.OrderRequest;
 import com.fissara.taco.ordering.system.dto.OrderResponse;

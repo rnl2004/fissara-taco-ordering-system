@@ -1,9 +1,9 @@
 package com.fissara.taco.ordering.system.service;
 
-import com.fissara.taco.ordering.system.commons.exception.CustomerException;
-import com.fissara.taco.ordering.system.commons.exception.IngredientException;
-import com.fissara.taco.ordering.system.commons.exception.OrderingException;
-import com.fissara.taco.ordering.system.commons.exception.TacoException;
+import com.fissara.taco.ordering.system.commons.exceptions.CustomerException;
+import com.fissara.taco.ordering.system.commons.exceptions.IngredientException;
+import com.fissara.taco.ordering.system.commons.exceptions.OrderingException;
+import com.fissara.taco.ordering.system.commons.exceptions.TacoException;
 import com.fissara.taco.ordering.system.commons.messages.ConfirmMessage;
 import com.fissara.taco.ordering.system.commons.utils.Validate;
 import com.fissara.taco.ordering.system.dto.*;
@@ -41,12 +41,18 @@ public class OrderService {
     private IngredientRepository ingredientRepository;
 
     @Transactional
-    public OrderResponse processOrderRequest(OrderRequest orderRequest) throws OrderingException, TacoException, IngredientException, CustomerException {
+    public OrderResponse processOrderRequest(OrderRequest orderRequest) throws OrderingException,
+            TacoException, IngredientException, CustomerException {
         logger.info("Start transactional order process. This will rollback once got an error...");
         try {
             Validate validate = new Validate();
             logger.info("Validating customer...");
             validate.validateCustomer(orderRequest.getOrder().getCustomer());
+            logger.info("Fetching customer if exist...");
+            Customer customer = customerRepository.findById(orderRequest.getOrder().getCustomer().getId())
+                    .orElse(null);
+            logger.info("Revalidate customer...");
+            validate.validateCustomer(customer);
 
             logger.info("Validating taco...");
             validate.validateTaco(orderRequest.getOrder().getTacos());
@@ -95,13 +101,18 @@ public class OrderService {
      * @throws OrderingException
      */
     @Transactional(readOnly = true)
-    public CustomerOrderResponse findAllOrdersByCustomerId(Long customerId) throws OrderingException {
+    public CustomerOrderResponse findAllOrdersByCustomerId(Long customerId) throws OrderingException, CustomerException {
         logger.info("Start transactional getting order process. This will rollback once got an error...");
         CustomerOrderResponse customerOrders = new CustomerOrderResponse();
         try {
+            Validate validate = new Validate();
             logger.info("Construct customer orders...");
             List<CustomerOrder> customerOrderList = new LinkedList<>();
-            Customer customer = customerRepository.getOne(customerId);
+
+            logger.info("Validating customer...");
+            Customer customer = customerRepository.findById(customerId).orElse(null);
+            validate.validateCustomer(customer);
+
             CustomerDetail customerDetail = new CustomerDetail();
             customerDetail.setId(customer.getId());
             customerDetail.setName(customer.getName());
@@ -138,6 +149,8 @@ public class OrderService {
 
             logger.info("Final constructing of customer order details...");
             customerOrders.setCustomerOrders(customerOrderList);
+        } catch (CustomerException ce) {
+            throw new CustomerException(ce.getMessage());
         } catch (Exception e) {
             throw new OrderingException(e.getMessage());
         }

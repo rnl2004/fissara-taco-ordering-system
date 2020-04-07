@@ -1,7 +1,9 @@
 package com.fissara.taco.ordering.system.commons.utils;
 
-import com.fissara.taco.ordering.system.commons.exception.IngredientException;
-import com.fissara.taco.ordering.system.commons.exception.TacoException;
+import com.fissara.taco.ordering.system.commons.exceptions.CustomerException;
+import com.fissara.taco.ordering.system.commons.exceptions.IngredientException;
+import com.fissara.taco.ordering.system.commons.exceptions.TacoException;
+import com.fissara.taco.ordering.system.model.Customer;
 import com.fissara.taco.ordering.system.model.Ingredient;
 import com.fissara.taco.ordering.system.model.Taco;
 import org.junit.Test;
@@ -11,6 +13,29 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ValidateUtilTest {
+
+    @Test
+    public void customerNullValidationTest() {
+
+        // Assuming the value of customer is null
+        Customer customer = new Customer();
+
+        Validate validate = new Validate();
+
+        Assertions.assertThrows(CustomerException.class, () -> { validate.validateCustomer(customer); });
+    }
+
+    @Test
+    public void customerNullIdValidationTest() {
+
+        // Assuming the value of customer is null
+        Customer customer = new Customer();
+        customer.setId(null);
+
+        Validate validate = new Validate();
+
+        Assertions.assertThrows(CustomerException.class, () -> { validate.validateCustomer(customer); });
+    }
 
     @Test
     public void tacoNameValidationTest() {

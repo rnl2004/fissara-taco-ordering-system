@@ -1,4 +1,4 @@
-package com.fissara.taco.ordering.system.commons.exception;
+package com.fissara.taco.ordering.system.commons.exceptions;
 
 public class IngredientException extends Exception {
     public IngredientException(String message) {
