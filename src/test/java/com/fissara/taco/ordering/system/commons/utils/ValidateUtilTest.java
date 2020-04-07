@@ -28,7 +28,7 @@ public class ValidateUtilTest {
     @Test
     public void customerNullIdValidationTest() {
 
-        // Assuming the value of customer is null
+        // Assuming the value of customer is not null but the customer id itself is null
         Customer customer = new Customer();
         customer.setId(null);
 
