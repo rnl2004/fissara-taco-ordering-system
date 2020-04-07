@@ -39,7 +39,8 @@ public class OrderController {
      * @throws OrderingException
      */
     @GetMapping(value = "/findAllOrdersByCustomer", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CustomerOrderResponse findAllOrdersByCustomer(@RequestParam(value = "id") Long id) throws OrderingException, CustomerException {
+    public CustomerOrderResponse findAllOrdersByCustomer(@RequestParam(value = "id") Long id) throws OrderingException,
+            CustomerException {
         return orderService.findAllOrdersByCustomerId(id);
     }
 }
