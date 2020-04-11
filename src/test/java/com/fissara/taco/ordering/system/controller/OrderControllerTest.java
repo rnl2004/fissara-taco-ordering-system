@@ -10,39 +10,55 @@ import com.fissara.taco.ordering.system.model.Ingredient;
 import com.fissara.taco.ordering.system.model.Order;
 import com.fissara.taco.ordering.system.model.Taco;
 import com.fissara.taco.ordering.system.service.OrderService;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = OrderController.class)
+@SpringBootTest
+@ActiveProfiles(value = "test")
 public class OrderControllerTest {
 
     @Autowired
+    private WebApplicationContext context;
+
     MockMvc mockMvc;
 
     @MockBean
     OrderService orderService;
 
-    @Ignore
+    @Before
+    public void setup() {
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
+    }
+
+    @WithMockUser("testuser")
     @Test
     public void placeOrderTest() throws Exception {
         Customer mockCustomer = new Customer();
