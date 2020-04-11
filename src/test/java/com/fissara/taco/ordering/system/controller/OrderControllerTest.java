@@ -10,6 +10,7 @@ import com.fissara.taco.ordering.system.model.Ingredient;
 import com.fissara.taco.ordering.system.model.Order;
 import com.fissara.taco.ordering.system.model.Taco;
 import com.fissara.taco.ordering.system.service.OrderService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -41,6 +42,7 @@ public class OrderControllerTest {
     @MockBean
     OrderService orderService;
 
+    @Ignore
     @Test
     public void placeOrderTest() throws Exception {
         Customer mockCustomer = new Customer();

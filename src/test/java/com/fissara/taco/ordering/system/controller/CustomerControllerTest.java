@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fissara.taco.ordering.system.model.Customer;
 import com.fissara.taco.ordering.system.service.CustomerService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -33,6 +34,7 @@ public class CustomerControllerTest {
     @MockBean
     CustomerService customerService;
 
+    @Ignore
     @Test
     public void createCustomerTest() throws Exception {
         Customer mockCustomer = new Customer();
