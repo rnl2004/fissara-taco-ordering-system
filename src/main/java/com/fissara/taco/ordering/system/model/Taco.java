@@ -1,5 +1,6 @@
 package com.fissara.taco.ordering.system.model;
 
+import com.fissara.taco.ordering.system.model.audit.DateAudit;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -13,7 +14,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "taco_tbl")
-public class Taco extends AuditModel {
+public class Taco extends DateAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

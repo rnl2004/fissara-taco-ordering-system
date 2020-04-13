@@ -1,6 +1,7 @@
 -- Insert initial roles
 INSERT INTO roles(name) VALUES('ROLE_USER');
 INSERT INTO roles(name) VALUES('ROLE_ADMIN');
+INSERT INTO roles(name) VALUES('ROLE_MANAGER');
 
 -- Insert customer data
 INSERT INTO customer_tbl (id, name, created_at, updated_at) VALUES(1, 'Fissara Company', CURRENT_DATE(), NULL);

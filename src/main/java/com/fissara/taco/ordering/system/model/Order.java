@@ -1,5 +1,6 @@
 package com.fissara.taco.ordering.system.model;
 
+import com.fissara.taco.ordering.system.model.audit.UserDateAudit;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "order_tbl")
-public class Order extends AuditModel {
+public class Order extends UserDateAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
