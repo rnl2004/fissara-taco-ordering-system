@@ -21,6 +21,6 @@ public class Order extends UserDateAudit {
     @JoinColumn(name="customer_id", nullable=false)
     private Customer customer;
 
-    @OneToMany(targetEntity = Order.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     private List<Taco> tacos;
 }

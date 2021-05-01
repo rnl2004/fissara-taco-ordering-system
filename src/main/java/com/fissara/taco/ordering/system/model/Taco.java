@@ -28,7 +28,7 @@ public class Taco extends DateAudit {
     @JoinColumn(name="order_id", nullable=false)
     private Order order;
 
-    @OneToMany(targetEntity = Taco.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "taco")
     private List<Ingredient> ingredients;
 
 }

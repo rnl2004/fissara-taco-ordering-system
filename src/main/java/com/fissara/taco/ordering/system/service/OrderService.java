@@ -125,7 +125,7 @@ public class OrderService {
 
                 logger.info("Construct taco details...");
                 List<TacoDetail> tacoDetails = new LinkedList<>();
-                for (Taco taco : tacoRepository.findTacosByOrderId(o.getId())) {
+                for (Taco taco : o.getTacos()) {
                     TacoDetail tacoDetail = new TacoDetail();
                     tacoDetail.setId(taco.getId());
                     tacoDetail.setName(taco.getName());
@@ -133,7 +133,7 @@ public class OrderService {
 
                     logger.info("Construct taco ingredients detail...");
                     List<IngredientDetail> ingredientDetails = new LinkedList<>();
-                    for (Ingredient ingredient : ingredientRepository.findIngredientsByTacoId(tacoDetail.getId())) {
+                    for (Ingredient ingredient : taco.getIngredients()) {
                         IngredientDetail ingredientDetail = new IngredientDetail();
                         ingredientDetail.setId(ingredient.getId());
                         ingredientDetail.setName(ingredient.getName());
